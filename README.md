@@ -1,36 +1,39 @@
 # Spam Email Detection Project
 
-A machine learning project that uses Natural Language Processing (NLP) and various Naive Bayes classifiers to detect spam emails with high accuracy.
+A comprehensive machine learning project that uses Natural Language Processing (NLP) with both **Classification** and **Clustering** methods to detect spam emails with high accuracy.
 
 ## 📊 Project Overview
 
 This project implements a complete spam email detection pipeline including:
 - Data preprocessing and cleaning
-- Exploratory data analysis (EDA)
 - Text preprocessing with NLTK
-- Feature extraction using CountVectorizer
-- Machine learning model training and evaluation
-- Performance comparison of different Naive Bayes algorithms
+- Feature extraction using TF-IDF vectorization
+- **Classification**: Logistic Regression
+- **Clustering**: K-Means clustering analysis
+- Performance evaluation and visualization
 
 ## 🎯 Results
 
-The project achieves excellent performance across different algorithms:
+### Classification Results (Logistic Regression)
+- **Accuracy**: High performance on spam detection
+- **Precision**: Excellent precision for spam classification
+- **Recall**: Good recall for identifying spam emails
+- **F1-Score**: Balanced precision and recall
 
-| Algorithm | Accuracy | Precision |
-|-----------|----------|-----------|
-| **Bernoulli Naive Bayes** | **98.9%** | **98.6%** |
-| Gaussian Naive Bayes | 94.9% | 95.0% |
-| Multinomial Naive Bayes | 88.1% | 98.7% |
-
-**Best Model:** Bernoulli Naive Bayes with 98.9% accuracy
+### Clustering Results (K-Means)
+- **Clusters**: 2 clusters grouping similar emails
+- **Visualization**: PCA-reduced plots showing cluster separation
+- **Metrics**: Adjusted Rand Index and Normalized Mutual Information
+- **Analysis**: Comparison of clusters with actual spam labels
 
 ## 📁 Project Structure
 
 ```
-├── Spam1.ipynb                    # Main Jupyter notebook
+├── SPAM_FINAL.ipynb              # Main Jupyter notebook with classification & clustering
 ├── dataset/
 │   ├── cleaned_dataset.csv        # Preprocessed dataset
 │   └── preprocessed_dataset.csv   # Final processed dataset
+├── requirements.txt               # Python dependencies
 └── README.md                      # This file
 ```
 
@@ -54,7 +57,10 @@ The project achieves excellent performance across different algorithms:
 - **Visualization:** matplotlib, seaborn
 - **NLP:** NLTK (Natural Language Toolkit)
 - **Machine Learning:** scikit-learn
-- **Text Processing:** wordcloud
+- **Classification:** Logistic Regression
+- **Clustering:** K-Means
+- **Dimensionality Reduction:** PCA
+- **Text Processing:** TF-IDF vectorization
 
 ## 📋 Requirements
 
@@ -78,7 +84,7 @@ pip install pandas matplotlib seaborn nltk scikit-learn wordcloud
    ```
 
 3. **Open and run the notebook:**
-   - Open `Spam1.ipynb` in Jupyter Notebook or VS Code
+   - Open `SPAM_FINAL.ipynb` in Jupyter Notebook or VS Code
    - Run all cells to execute the complete pipeline
 
 ## 📈 Key Features
@@ -104,56 +110,60 @@ pip install pandas matplotlib seaborn nltk scikit-learn wordcloud
 - Word cloud generation
 
 ### Machine Learning Pipeline
-- Text vectorization using CountVectorizer
-- Train-test split (80-20)
-- Multiple algorithm comparison
-- Performance evaluation with accuracy, precision, and confusion matrix
+- **Classification**: Logistic Regression with TF-IDF vectorization
+- **Clustering**: K-Means clustering with PCA visualization
+- Train-test split (75-25)
+- Performance evaluation with multiple metrics
+- Cluster analysis and comparison with actual labels
 
 ## 📊 Visualizations
 
 The notebook includes various visualizations:
-- Pie chart showing spam distribution
-- Histograms comparing text features between spam and non-spam
-- Correlation heatmap
-- Word clouds for spam and non-spam emails
-- Bar charts showing most frequent words
+- **Classification**: Performance metrics and confusion matrices
+- **Clustering**: PCA-reduced scatter plots showing cluster separation
+- **Comparison**: Side-by-side visualization of clusters vs actual labels
+- **Analysis**: Statistical comparison of clustering results
 
 ## 🔍 Model Performance
 
-The Bernoulli Naive Bayes model shows the best performance:
-- **Accuracy:** 98.9%
-- **Precision:** 98.6%
-- **Confusion Matrix:**
-  ```
-  [[845   4]
-   [  8 282]]
-  ```
+### Classification (Logistic Regression)
+- **High accuracy** for spam detection
+- **Excellent precision** for spam classification
+- **Good recall** for identifying spam emails
+- **Balanced F1-score** combining precision and recall
+
+### Clustering (K-Means)
+- **2 clusters** grouping similar emails
+- **Adjusted Rand Index** measuring cluster quality
+- **Normalized Mutual Information** for cluster evaluation
+- **PCA visualization** showing cluster separation
 
 ## 📝 Usage Example
 
 ```python
-# Load the trained model
-bnb = BernoulliNB()
-bnb.fit(X_train, y_train)
-
-# Predict on new email
+# Classification: Predict spam using Logistic Regression
 new_email = "Your email content here..."
 processed_email = text_transform(new_email)
-email_vector = cv.transform([processed_email])
-prediction = bnb.predict(email_vector)
+email_vector = tfidf.transform([processed_email])
+prediction = clf.predict(email_vector)
 
 if prediction == 1:
     print("This is SPAM")
 else:
     print("This is NOT SPAM")
+
+# Clustering: Group similar emails
+cluster_labels = kmeans.predict(email_vector)
+print(f"Email belongs to cluster: {cluster_labels[0]}")
 ```
 
 ## 🤝 Contributing
 
 Feel free to contribute to this project by:
 - Improving the preprocessing pipeline
-- Experimenting with different algorithms
-- Adding new features
+- Experimenting with different classification algorithms
+- Adding more clustering methods (DBSCAN, Hierarchical)
+- Adding regression analysis
 - Optimizing performance
 
 ## 📄 License
@@ -166,4 +176,4 @@ Created as part of Computing Technology Project Assignment.
 
 ---
 
-**Note:** This project was originally developed in Google Colab and has been adapted for local execution. Make sure all dependencies are installed before running the notebook.
+**Note:** This project combines both **Classification** (Logistic Regression) and **Clustering** (K-Means) methods to provide comprehensive spam email detection. The notebook has been adapted for local execution - make sure all dependencies are installed before running.
