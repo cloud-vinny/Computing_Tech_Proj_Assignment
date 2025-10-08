@@ -31,7 +31,7 @@ This project implements a complete spam email detection pipeline including:
 ```
 ├── Spam1_2_Final.ipynb          # Main Jupyter notebook with classification & clustering
 ├── dataset/
-│   ├── cleaned_dataset.csv      # Original cleaned dataset
+│   ├── cleaned_dataset.csv      # cleaned and dataset
 │   ├── emails.csv               # Email dataset 1
 │   └── spam.csv                 # Email dataset 2
 ├── requirements.txt             # Python dependencies
@@ -40,7 +40,8 @@ This project implements a complete spam email detection pipeline including:
 
 ## 🗃️ Dataset
 
-- **Source:** Multiple spam email detection datasets
+- **Source1: emails.csv** Basic_dataset.zip under the Assignment2 Instruction.
+- **Source2: spam.csv** Kaggle.com
 - **Size:** 10,864 emails (merged from 2 datasets)
 - **Features:** 2 columns including text content and spam labels
 - **Columns:**
@@ -51,10 +52,10 @@ This project implements a complete spam email detection pipeline including:
 
 - **Python 3.13.3**
 - **Data Processing:** pandas, numpy
-- **Visualization:** matplotlib, seaborn
+- **Visualization:** matplotlib, seaborn, wordcloud
 - **NLP:** NLTK (Natural Language Toolkit)
 - **Machine Learning:** scikit-learn
-- **Classification:** Logistic Regression
+- **Classification:** Logistic Regression, Multinomial Naive Bayes
 - **Clustering:** K-Means
 - **Dimensionality Reduction:** PCA
 - **Text Processing:** TF-IDF vectorization
@@ -94,15 +95,19 @@ pip install -r requirements.txt
 ### Data Preprocessing
 - Text normalization (lowercase conversion)
 - Removal of email headers (subject, re, fw, news)
+- Tokenization using NLTK
 - Duplicate removal
+- Stop word removal
+- Punctuation removal
+- Stemming using Porter Stemmer
 - Missing value handling
+- Feature extraction (character count, word count, sentence count)
 
 ### Text Processing
 - Tokenization using NLTK
 - Stop word removal
 - Punctuation removal
 - Stemming using Porter Stemmer
-- Feature extraction (character count, word count, sentence count)
 
 ### Machine Learning Pipeline
 - **Classification**: Multinomial Naive Bayes and Logistic Regression with TF-IDF vectorization
