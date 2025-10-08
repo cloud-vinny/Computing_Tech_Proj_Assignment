@@ -8,17 +8,17 @@ This project implements a complete spam email detection pipeline including:
 - Data preprocessing and cleaning
 - Text preprocessing with NLTK
 - Feature extraction using TF-IDF vectorization
-- **Classification**: Logistic Regression
+- **Classification**: Multinomial Naive Bayes and Logistic Regression
 - **Clustering**: K-Means clustering analysis
 - Performance evaluation and visualization
 
 ## 🎯 Results
 
-### Classification Results (Logistic Regression)
-- **Accuracy**: High performance on spam detection
-- **Precision**: Excellent precision for spam classification
-- **Recall**: Good recall for identifying spam emails
-- **F1-Score**: Balanced precision and recall
+### Classification Results
+- **Multinomial Naive Bayes**: High accuracy for spam detection
+- **Logistic Regression**: Excellent precision and recall
+- **Performance Metrics**: Accuracy, precision, recall, F1-score
+- **Confusion Matrix**: Detailed classification analysis
 
 ### Clustering Results (K-Means)
 - **Clusters**: 2 clusters grouping similar emails
@@ -105,7 +105,7 @@ pip install -r requirements.txt
 - Feature extraction (character count, word count, sentence count)
 
 ### Machine Learning Pipeline
-- **Classification**: Logistic Regression with TF-IDF vectorization
+- **Classification**: Multinomial Naive Bayes and Logistic Regression with TF-IDF vectorization
 - **Clustering**: K-Means clustering with PCA visualization
 - Train-test split (75-25)
 - Performance evaluation with multiple metrics
@@ -121,11 +121,11 @@ The notebook includes various visualizations:
 
 ## 🔍 Model Performance
 
-### Classification (Logistic Regression)
-- **High accuracy** for spam detection
-- **Excellent precision** for spam classification
-- **Good recall** for identifying spam emails
-- **Balanced F1-score** combining precision and recall
+### Classification (Multinomial Naive Bayes + Logistic Regression)
+- **Multinomial Naive Bayes**: High accuracy for spam detection
+- **Logistic Regression**: Excellent precision and recall
+- **Performance Comparison**: Both algorithms evaluated with multiple metrics
+- **Confusion Matrix**: Detailed analysis of classification results
 
 ### Clustering (K-Means)
 - **2 clusters** grouping similar emails
@@ -136,16 +136,18 @@ The notebook includes various visualizations:
 ## 📝 Usage Example
 
 ```python
-# Classification: Predict spam using Logistic Regression
+# Classification: Predict spam using Multinomial Naive Bayes or Logistic Regression
 new_email = "Your email content here..."
 processed_email = text_transform(new_email)
 email_vector = tfidf.transform([processed_email])
-prediction = clf.predict(email_vector)
 
-if prediction == 1:
-    print("This is SPAM")
-else:
-    print("This is NOT SPAM")
+# Using Multinomial Naive Bayes
+prediction_mnb = mnb.predict(email_vector)
+print(f"MultinomialNB prediction: {'SPAM' if prediction_mnb[0] == 1 else 'NOT SPAM'}")
+
+# Using Logistic Regression
+prediction_lr = clf.predict(email_vector)
+print(f"Logistic Regression prediction: {'SPAM' if prediction_lr[0] == 1 else 'NOT SPAM'}")
 
 # Clustering: Group similar emails
 cluster_labels = kmeans.predict(email_vector)
