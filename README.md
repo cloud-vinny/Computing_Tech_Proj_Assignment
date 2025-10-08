@@ -31,7 +31,7 @@ This project implements a complete spam email detection pipeline including:
 ```
 ├── Spam1_2_Final.ipynb          # Main Jupyter notebook with classification & clustering
 ├── dataset/
-│   ├── cleaned_dataset.csv      # cleaned and dataset
+│   ├── cleaned_dataset.csv      # cleaned and preprocessed dataset
 │   ├── emails.csv               # Email dataset 1
 │   └── spam.csv                 # Email dataset 2
 ├── requirements.txt             # Python dependencies
