@@ -1,181 +1,208 @@
-# Spam Email Detection Project
+# Spam Detection Full-Stack Application
 
-A comprehensive machine learning project that uses Natural Language Processing (NLP) with both **Classification** and **Clustering** methods to detect spam emails with high accuracy.
+A complete full-stack web application for AI-powered spam detection using Next.js, TypeScript, FastAPI, and machine learning.
 
-## 📊 Project Overview
+## 🚀 Tech Stack
 
-This project implements a complete spam email detection pipeline including:
-- Data preprocessing and cleaning
-- Text preprocessing with NLTK
-- Feature extraction using TF-IDF vectorization
-- **Classification**: Multinomial Naive Bayes and Logistic Regression
-- **Clustering**: K-Means clustering analysis
-- Performance evaluation and visualization
+### Frontend
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **CSS** - Custom styling (no frameworks)
+- **Axios** - HTTP client for API calls
 
-## 🎯 Results
+### Backend
+- **FastAPI** - Modern Python web framework
+- **Scikit-learn** - Machine learning models
+- **NLTK** - Natural language processing
+- **Pandas** - Data processing
 
-### Classification Results
-- **Multinomial Naive Bayes**: High accuracy for spam detection
-- **Logistic Regression**: Excellent precision and recall
-- **Performance Metrics**: Accuracy, precision, recall, F1-score
-- **Confusion Matrix**: Detailed classification analysis
-
-### Clustering Results (K-Means)
-- **Clusters**: 2 clusters grouping similar emails
-- **Visualization**: PCA-reduced plots showing cluster separation
-- **Metrics**: Adjusted Rand Index and Normalized Mutual Information
-- **Analysis**: Comparison of clusters with actual spam labels
+### AI Models
+- **Logistic Regression** - Best overall performance (96.5% accuracy)
+- **Naive Bayes** - Text classification
+- **K-Means** - Clustering analysis
 
 ## 📁 Project Structure
 
 ```
-├── Spam1_2_Final.ipynb          # Main Jupyter notebook with classification & clustering
-├── dataset/
-│   ├── cleaned_dataset.csv      # cleaned and preprocessed dataset
-│   ├── emails.csv               # Email dataset 1
-│   └── spam.csv                 # Email dataset 2
-├── requirements.txt             # Python dependencies
-└── README.md                    # This file
+├── app/                          # Next.js App Router
+│   ├── globals.css               # Global styles
+│   ├── layout.tsx               # Root layout
+│   └── page.tsx                 # Home page
+├── components/                   # React components
+│   ├── Header.tsx               # Navigation header
+│   ├── Footer.tsx               # Footer component
+│   └── SpamDetectionForm.tsx    # Main detection form
+├── lib/                         # Utility functions
+│   └── api.ts                   # API client with TypeScript
+├── dataset/                     # ML datasets
+├── app.py                       # FastAPI backend
+├── requirements_fastapi.txt     # Python dependencies
+├── package.json                 # Node.js dependencies
+└── tsconfig.json               # TypeScript configuration
 ```
 
-## 🗃️ Dataset
+## 🛠️ Setup & Installation
 
-- **Source1: emails.csv** Basic_dataset.zip under the Assignment2 Instruction.
-- **Source2: spam.csv** Kaggle.com
-- **Size:** 10,864 emails (merged from 2 datasets)
-- **Features:** 2 columns including text content and spam labels
-- **Columns:**
-  - `text`: Email content
-  - `spam`: Binary label (1 = spam, 0 = not spam)
+### Prerequisites
+- Python 3.8+
+- Node.js 18+
+- npm or yarn
 
-## 🛠️ Technologies Used
-
-- **Python 3.13.3**
-- **Data Processing:** pandas, numpy
-- **Visualization:** matplotlib, seaborn, wordcloud
-- **NLP:** NLTK (Natural Language Toolkit)
-- **Machine Learning:** scikit-learn
-- **Classification:** Logistic Regression, Multinomial Naive Bayes
-- **Clustering:** K-Means
-- **Dimensionality Reduction:** PCA
-- **Text Processing:** TF-IDF vectorization
-
-## 📋 Requirements
-
-Install the required packages:
-
+### 1. Install Python Dependencies
 ```bash
-pip install -r requirements.txt
+pip install -r requirements_fastapi.txt
 ```
 
-## 🚀 How to Run
-
-1. **Clone the repository:**
-   ```bash
-   git clone <your-repo-url>
-   cd Computing_Tech_Proj_Assignment
-   ```
-
-2. **Switch to the main-project branch:**
-   ```bash
-   git checkout main-project
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Open and run the notebook:**
-   - Open `Spam1_2_Final.ipynb` in Jupyter Notebook or VS Code
-   - Run all cells to execute the complete pipeline
-
-## 📈 Key Features
-
-### Data Preprocessing
-- Text normalization (lowercase conversion)
-- Removal of email headers (subject, re, fw, news)
-- Tokenization using NLTK
-- Duplicate removal
-- Stop word removal
-- Punctuation removal
-- Stemming using Porter Stemmer
-- Missing value handling
-- Feature extraction (character count, word count, sentence count)
-
-### Text Processing
-- Tokenization using NLTK
-- Stop word removal
-- Punctuation removal
-- Stemming using Porter Stemmer
-
-### Machine Learning Pipeline
-- **Classification**: Multinomial Naive Bayes and Logistic Regression with TF-IDF vectorization
-- **Clustering**: K-Means clustering with PCA visualization
-- Train-test split (75-25)
-- Performance evaluation with multiple metrics
-- Cluster analysis and comparison with actual labels
-
-## 📊 Visualizations
-
-The notebook includes various visualizations:
-- **Classification**: Performance metrics and confusion matrices
-- **Clustering**: PCA-reduced scatter plots showing cluster separation
-- **Comparison**: Side-by-side visualization of clusters vs actual labels
-- **Analysis**: Statistical comparison of clustering results
-
-## 🔍 Model Performance
-
-### Classification (Multinomial Naive Bayes + Logistic Regression)
-- **Multinomial Naive Bayes**: High accuracy for spam detection
-- **Logistic Regression**: Excellent precision and recall
-- **Performance Comparison**: Both algorithms evaluated with multiple metrics
-- **Confusion Matrix**: Detailed analysis of classification results
-
-### Clustering (K-Means)
-- **2 clusters** grouping similar emails
-- **Adjusted Rand Index** measuring cluster quality
-- **Normalized Mutual Information** for cluster evaluation
-- **PCA visualization** showing cluster separation
-
-## 📝 Usage Example
-
-```python
-# Classification: Predict spam using Multinomial Naive Bayes or Logistic Regression
-new_email = "Your email content here..."
-processed_email = text_transform(new_email)
-email_vector = tfidf.transform([processed_email])
-
-# Using Multinomial Naive Bayes
-prediction_mnb = mnb.predict(email_vector)
-print(f"MultinomialNB prediction: {'SPAM' if prediction_mnb[0] == 1 else 'NOT SPAM'}")
-
-# Using Logistic Regression
-prediction_lr = clf.predict(email_vector)
-print(f"Logistic Regression prediction: {'SPAM' if prediction_lr[0] == 1 else 'NOT SPAM'}")
-
-# Clustering: Group similar emails
-cluster_labels = kmeans.predict(email_vector)
-print(f"Email belongs to cluster: {cluster_labels[0]}")
+### 2. Install Node.js Dependencies
+```bash
+npm install
 ```
+
+### 3. Download NLTK Data
+```bash
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')"
+```
+
+## 🚀 Running the Application
+
+### Start FastAPI Backend (Terminal 1)
+```bash
+python app.py
+```
+Backend will be available at: http://localhost:8000
+
+### Start Next.js Frontend (Terminal 2)
+```bash
+npm run dev
+```
+Frontend will be available at: http://localhost:3000
+
+## 🔧 API Endpoints
+
+### FastAPI Backend (http://localhost:8000)
+
+#### POST `/detect`
+Analyze text for spam detection.
+
+**Request:**
+```json
+{
+  "text": "Your email content here...",
+  "model": "logistic"
+}
+```
+
+**Response:**
+```json
+{
+  "is_spam": true,
+  "confidence": 0.85,
+  "model_used": "Logistic Regression",
+  "message": "This message appears to be spam."
+}
+```
+
+#### GET `/health`
+Check API health status.
+
+#### GET `/models`
+Get available AI models.
+
+## 🎯 Features
+
+### Frontend Features
+- **Modern UI** - Clean, responsive design with custom CSS
+- **TypeScript** - Full type safety and better development experience
+- **Real-time Analysis** - Instant spam detection with confidence scores
+- **Model Selection** - Choose between different AI models
+- **Error Handling** - User-friendly error messages
+- **Loading States** - Visual feedback during analysis
+
+### Backend Features
+- **RESTful API** - Clean, documented endpoints
+- **Multiple Models** - Logistic Regression, Naive Bayes, K-Means
+- **Text Preprocessing** - NLTK-based text cleaning and tokenization
+- **CORS Support** - Cross-origin requests enabled
+- **Health Checks** - API status monitoring
+- **Error Handling** - Comprehensive error responses
+
+### AI Model Features
+- **High Accuracy** - 96.5% accuracy with Logistic Regression
+- **Confidence Scores** - Probability-based predictions
+- **Multiple Algorithms** - Different approaches for comparison
+- **Real-time Processing** - Fast inference for user input
+
+## 📊 Model Performance
+
+### Logistic Regression (Recommended)
+- **Accuracy**: 96.5%
+- **Precision**: 88.7%
+- **Recall**: 94.6%
+- **F1-Score**: 91.6%
+- **ROC-AUC**: 99.2%
+
+### Available Models
+1. **Logistic Regression** - Best overall performance
+2. **Naive Bayes** - Good for text classification
+3. **K-Means** - Unsupervised clustering
+
+## 🧪 Testing
+
+### Test the API
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Spam detection
+curl -X POST "http://localhost:8000/detect" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Buy one get one free!", "model": "logistic"}'
+```
+
+### Test the Frontend
+1. Open http://localhost:3000
+2. Enter sample text
+3. Select AI model
+4. Click "Analyze for Spam"
+
+## 🚀 Deployment
+
+### Frontend (Vercel)
+1. Connect GitHub repository to Vercel
+2. Set environment variables
+3. Deploy automatically
+
+### Backend (Railway/Heroku)
+1. Add `Procfile` with: `web: uvicorn app:app --host 0.0.0.0 --port $PORT`
+2. Deploy with Python buildpack
+3. Set environment variables
+
+## 📝 Development Notes
+
+### Code Structure
+- **TypeScript** - Full type safety with interfaces
+- **Component-based** - Reusable React components
+- **API Client** - Centralized API communication
+- **Error Boundaries** - Graceful error handling
+
+### Best Practices
+- **Type Safety** - All API calls are typed
+- **Error Handling** - Comprehensive error management
+- **Loading States** - User feedback during operations
+- **Responsive Design** - Mobile-first approach
 
 ## 🤝 Contributing
 
-Feel free to contribute to this project by:
-- Improving the preprocessing pipeline
-- Experimenting with different classification algorithms
-- Adding more clustering methods (DBSCAN, Hierarchical)
-- Adding regression analysis
-- Optimizing performance
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## 📄 License
 
-This project is open source and available under the MIT License.
-
-## 👨‍💻 Author
-
-Created as part of Computing Technology Project Assignment.
+This project is part of the Computing Technology Project Assignment.
 
 ---
 
-**Note:** This project combines both **Classification** (Logistic Regression) and **Clustering** (K-Means) methods to provide comprehensive spam email detection. The notebook has been adapted for local execution - make sure all dependencies are installed before running.
+**Built with ❤️ using Next.js, TypeScript, FastAPI, and Machine Learning**
