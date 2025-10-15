@@ -54,12 +54,12 @@ pip install -r requirements_fastapi.txt
 ```
 
 ### 2. Install Node.js Dependencies
-```bash
+   ```bash
 npm install
-```
+   ```
 
 ### 3. Download NLTK Data
-```bash
+   ```bash
 python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')"
 ```
 
@@ -72,7 +72,7 @@ python app.py
 Backend will be available at: http://localhost:8000
 
 ### Start Next.js Frontend (Terminal 2)
-```bash
+   ```bash
 npm run dev
 ```
 Frontend will be available at: http://localhost:3000
