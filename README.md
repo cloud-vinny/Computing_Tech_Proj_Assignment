@@ -1,4 +1,4 @@
-<img width="1088" height="162" alt="image" src="https://github.com/user-attachments/assets/626b3d2b-95e3-48c5-8d8a-74dfe1e2ec12" /># 🛡️ Spam Detection App
+🛡️ Spam Detection App
 
 A full-stack web application that uses machine learning to detect spam emails and messages. Built with Next.js, TypeScript, FastAPI, and advanced AI models including Logistic Regression, Naive Bayes, and K-Means clustering.
 
