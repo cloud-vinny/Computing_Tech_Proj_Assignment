@@ -65,7 +65,7 @@ export default function SpamDetectionForm() {
               value={emailText}
               onChange={(e) => setEmailText(e.target.value)}
               className="form-input textarea"
-              placeholder="Paste your email content here to check if it's spam..."
+              placeholder="Paste your email content here to check if it&apos;s spam..."
               rows={8}
               disabled={isLoading}
             />

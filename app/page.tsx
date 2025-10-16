@@ -12,7 +12,7 @@ export default function Home() {
               Spam Detection
             </h1>
             <p className="text-lg text-gray-600">
-              Enter your text below to check if it's spam
+              Enter your text below to check if it&apos;s spam
             </p>
           </div>
           
