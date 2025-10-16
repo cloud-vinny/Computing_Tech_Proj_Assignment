@@ -33,7 +33,12 @@ export default function SpamDetectionForm() {
       const response = await detectSpam(emailText, selectedModel)
       setResult(response)
     } catch (err) {
-      setError('Failed to analyze the message. Please try again.')
+      const error = err as Error
+      if (error.message?.includes('Network Error') || error.message?.includes('fetch')) {
+        setError('Backend server is not running. Please start the FastAPI server on port 8000.')
+      } else {
+        setError('Failed to analyze the message. Please try again.')
+      }
       console.error('Detection error:', err)
     } finally {
       setIsLoading(false)
