@@ -28,8 +28,26 @@ try:
 except LookupError:
     nltk.download('stopwords')
 
-# Initialize FastAPI app
-app = FastAPI(title="Spam Detection API", version="1.0.0")
+# Startup event using lifespan (modern FastAPI approach)
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    print("Starting up Spam Detection API...")
+    try:
+        load_and_train_models()
+        print("API startup completed successfully!")
+    except Exception as e:
+        print(f"Startup failed: {e}")
+        # Don't crash the app, just log the error
+        print("API will start without pre-trained models")
+    yield
+    # Shutdown (if needed)
+    print("Shutting down Spam Detection API...")
+
+# Initialize FastAPI app with lifespan
+app = FastAPI(title="Spam Detection API", version="1.0.0", lifespan=lifespan)
 
 # Add CORS middleware
 app.add_middleware(
@@ -117,17 +135,6 @@ def load_and_train_models():
         print(f"Error loading models: {e}")
         raise e
 
-# Startup event
-@app.on_event("startup")
-async def startup_event():
-    print("Starting up Spam Detection API...")
-    try:
-        load_and_train_models()
-        print("API startup completed successfully!")
-    except Exception as e:
-        print(f"Startup failed: {e}")
-        # Don't crash the app, just log the error
-        print("API will start without pre-trained models")
 
 # Health check endpoint
 @app.get("/")
