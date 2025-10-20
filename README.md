@@ -14,7 +14,8 @@ A full-stack web application that uses machine learning to detect spam emails an
 ## 🚀 Live Demo
 
 **🌐 Frontend:** [View Live Application on Vercel](https://spamdetector-mauve.vercel.app/)  
-**🔧 Backend API:** [Railway Backend](https://computingtechprojassignment-production.up.railway.app/health)
+**🔧 Backend API:** [Railway Backend](https://computingtechprojassignment-production.up.railway.app/health)  
+**✅ Status:** Backend integrated and ready!
 
 
 ## 🛠️ Tech Stack
