@@ -78,13 +78,18 @@ def load_and_train_models():
     global tfidf, clf, mnb, kmeans
     
     try:
-        # Load dataset
+        print("Loading dataset...")
+        # Load dataset with smaller sample for faster startup
         df = pd.read_csv("dataset/cleaned_dataset_small.csv")
         df.dropna(subset=['preprocessed_text'], inplace=True)
         
+        # Use only first 2000 rows for faster training
+        df = df.head(2000)
+        print(f"Using {len(df)} samples for training")
+        
         # Prepare data
         ros = RandomOverSampler(random_state=2)
-        tfidf = TfidfVectorizer(max_features=3000, ngram_range=(1,2))
+        tfidf = TfidfVectorizer(max_features=1000, ngram_range=(1,2))  # Reduced features
         X = tfidf.fit_transform(df['preprocessed_text']).toarray()
         y = df['spam'].values
         
@@ -93,9 +98,9 @@ def load_and_train_models():
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
         X_train_bal, y_train_bal = ros.fit_resample(X_train, y_train)
         
-        # Train models
+        # Train models with reduced complexity
         print("Training Logistic Regression...")
-        clf = LogisticRegression(max_iter=300, class_weight='balanced', n_jobs=None)
+        clf = LogisticRegression(max_iter=100, class_weight='balanced', n_jobs=1)  # Reduced iterations
         clf.fit(X_train_bal, y_train_bal)
         
         print("Training Naive Bayes...")
@@ -103,7 +108,7 @@ def load_and_train_models():
         mnb.fit(X_train_bal, y_train_bal)
         
         print("Training K-Means...")
-        kmeans = KMeans(n_clusters=2, random_state=2)
+        kmeans = KMeans(n_clusters=2, random_state=2, n_init=10)  # Reduced n_init
         kmeans.fit(X)
         
         print("All models trained successfully!")
@@ -116,7 +121,13 @@ def load_and_train_models():
 @app.on_event("startup")
 async def startup_event():
     print("Starting up Spam Detection API...")
-    load_and_train_models()
+    try:
+        load_and_train_models()
+        print("API startup completed successfully!")
+    except Exception as e:
+        print(f"Startup failed: {e}")
+        # Don't crash the app, just log the error
+        print("API will start without pre-trained models")
 
 # Health check endpoint
 @app.get("/")
