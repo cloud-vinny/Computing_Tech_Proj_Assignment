@@ -6,10 +6,12 @@ A full-stack web application that uses machine learning to detect spam emails an
 
 - **🤖 Multiple AI Models**: Choose between Logistic Regression, Naive Bayes, or K-Means clustering
 - **📊 Confidence Scores**: Get detailed confidence percentages for each prediction
-- **🎨 Modern UI**: Clean, responsive design with custom CSS
+- **🌓 Dark Mode**: Toggle between light and dark themes with persistent user preference
+- **🎨 Modern UI**: Clean, responsive design with scalable CSS design system using custom properties
 - **⚡ Real-time Analysis**: Instant spam detection with loading states
 - **🔒 Secure**: No data storage - your messages are analyzed and forgotten
-- **📱 Responsive**: Works perfectly on desktop and mobile devices
+- **📱 Fully Responsive**: Optimized for all device sizes (mobile, tablet, desktop) with breakpoint-based layouts
+- **🎯 Input Validation**: Minimum 5 words requirement for accurate spam detection (coming in next update)
 
 ## 🚀 Live Demo
 
@@ -23,7 +25,8 @@ A full-stack web application that uses machine learning to detect spam emails an
 ### Frontend
 - **Next.js 15.5.5** - React framework with App Router
 - **TypeScript** - Type-safe development
-- **Custom CSS** - Modern, responsive styling
+- **React Context API** - Global state management for theme switching
+- **Custom CSS Design System** - Scalable architecture with CSS custom properties (variables)
 - **Axios** - HTTP client for API calls
 
 ### Backend
@@ -63,8 +66,10 @@ npm install
 ### 3. Install Backend Dependencies
 
 ```bash
-pip install -r requirements_fastapi.txt
+pip install -r requirements.txt
 ```
+
+**Note:** The project uses `requirements.txt` for deployment (Railway). The `requirements_fastapi.txt` file exists but `requirements.txt` is the active dependency file with optimized versions for production.
 
 ### 4. Run the Application
 
@@ -89,21 +94,26 @@ Visit `http://localhost:3000` to use the spam detection app!
 ```
 Computing_Tech_Proj_Assignment/
 ├── app/                          # Next.js app directory
-│   ├── globals.css               # Global styles
-│   ├── layout.tsx                # Root layout
+│   ├── globals.css               # Global styles with CSS design system
+│   ├── layout.tsx                # Root layout with ThemeProvider
 │   └── page.tsx                  # Home page
 ├── components/                   # React components
 │   ├── SpamDetectionForm.tsx    # Main detection form
 │   ├── Header.tsx               # Header component
-│   └── Footer.tsx               # Footer component
+│   ├── Footer.tsx               # Footer component
+│   └── ThemeToggle.tsx          # Dark/light mode toggle button
+├── contexts/                     # React Context providers
+│   └── ThemeContext.tsx         # Theme state management
 ├── lib/                         # Utility libraries
 │   └── api.ts                   # API client
 ├── dataset/                     # Training data
-│   ├── cleaned_dataset.csv      # Processed dataset
-│   └── preprocessed_dataset.csv # Preprocessed data
+│   ├── cleaned_dataset.csv      # Full processed dataset
+│   ├── cleaned_dataset_small.csv # Optimized dataset for training
+│   └── cleaned_dataset_full_backup.csv # Backup dataset
 ├── app.py                       # FastAPI backend server
 ├── Best_Model.ipynb            # AI model training notebook
-├── requirements_fastapi.txt     # Python dependencies
+├── requirements.txt             # Python dependencies (active)
+├── requirements_fastapi.txt     # Alternative Python dependencies
 ├── package.json                 # Node.js dependencies
 └── README.md                    # This file
 ```
@@ -169,6 +179,16 @@ For the FastAPI backend, consider deploying to:
 - `GET /models` - Available AI models
 - `POST /detect` - Spam detection endpoint
 
+**Request Body:**
+```json
+{
+  "text": "Your message here (minimum 5 words required)",
+  "model": "logistic" // Options: "logistic", "naive_bayes", "kmeans"
+}
+```
+
+**Note:** Input validation requires a minimum of 5 words for accurate spam detection. This will be enforced in the frontend in the next update.
+
 #### Example API Usage
 
 ```bash
@@ -201,12 +221,25 @@ curl -X POST "http://localhost:8000/detect" \
 - Groups similar messages
 - Identifies spam clusters
 
+## 🎨 Design System
+
+This project uses a scalable CSS architecture based on custom properties (CSS variables) for:
+
+- **Theme Management**: Light and dark themes with seamless switching
+- **Responsive Breakpoints**: Mobile-first design with breakpoints at 640px (sm), 768px (md), 1024px (lg), 1280px (xl)
+- **Color System**: Centralized color tokens for consistent theming
+- **Spacing System**: Standardized spacing units for layout consistency
+- **Component Styling**: Reusable design tokens for buttons, cards, inputs, and results
+
+The theme system uses React Context API to provide global theme state across all components, with localStorage persistence for user preferences.
+
 ## 📈 Performance
 
 - **Build Time**: ~18 seconds
 - **Bundle Size**: 124 kB (First Load JS)
 - **Lighthouse Score**: 95+ (Performance)
 - **Model Accuracy**: 95%+ (Logistic Regression)
+- **Theme Switching**: Instant with zero layout shift
 
 ## 🐛 Troubleshooting
 
@@ -222,7 +255,7 @@ curl -X POST "http://localhost:8000/detect" \
    ```bash
    # Install with specific versions
    pip install --upgrade pip
-   pip install -r requirements_fastapi.txt
+   pip install -r requirements.txt
    ```
 
 3. **Build failures**:
