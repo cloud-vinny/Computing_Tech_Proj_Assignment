@@ -69,7 +69,7 @@ npm install
 pip install -r requirements.txt
 ```
 
-**Note:** The project uses `requirements.txt` for deployment (Railway). The `requirements_fastapi.txt` file exists but `requirements.txt` is the active dependency file with optimized versions for production.
+**Note:** The project uses `requirements.txt` with optimized dependency versions for Railway deployment.
 
 ### 4. Run the Application
 
@@ -112,8 +112,10 @@ Computing_Tech_Proj_Assignment/
 │   └── cleaned_dataset_full_backup.csv # Backup dataset
 ├── app.py                       # FastAPI backend server
 ├── Best_Model.ipynb            # AI model training notebook
-├── requirements.txt             # Python dependencies (active)
-├── requirements_fastapi.txt     # Alternative Python dependencies
+├── Spam1_2_Final.ipynb         # Data preprocessing notebook
+├── requirements.txt             # Python dependencies
+├── railway.json                 # Railway deployment configuration
+├── runtime.txt                  # Python version specification
 ├── package.json                 # Node.js dependencies
 └── README.md                    # This file
 ```
@@ -191,7 +193,7 @@ For the FastAPI backend, consider deploying to:
 
 #### Example API Usage
 
-```bash
+   ```bash
 # Health check
 curl http://localhost:8000/health
 
