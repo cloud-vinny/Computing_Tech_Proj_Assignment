@@ -33,13 +33,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute('data-theme', newTheme)
   }
 
-  // Prevent flash of wrong theme
-  if (!mounted) {
-    return <>{children}</>
+  // Always provide context, even during SSR
+  // Use default theme during SSR to prevent build errors
+  const contextValue = {
+    theme: mounted ? theme : 'light',
+    toggleTheme: mounted ? toggleTheme : () => {}
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   )
