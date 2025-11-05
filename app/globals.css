@@ -704,3 +704,28 @@ body {
 .text-green-600 {
   color: var(--color-success);
 }
+
+/* Tab Navigation */
+.border-b-2 {
+  border-bottom-width: 2px;
+}
+
+.border-blue-500 {
+  border-color: var(--color-primary);
+}
+
+.text-blue-600 {
+  color: var(--color-primary);
+}
+
+.dark\:text-blue-400 {
+  color: #60a5fa;
+}
+
+.border-gray-300 {
+  border-color: var(--border-color);
+}
+
+.dark\:border-gray-700 {
+  border-color: #374151;
+}

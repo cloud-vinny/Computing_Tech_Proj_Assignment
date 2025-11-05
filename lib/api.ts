@@ -44,6 +44,42 @@ export interface ModelsResponse {
   }>
 }
 
+export interface DatasetStatsResponse {
+  total_samples: number
+  spam_count: number
+  ham_count: number
+  spam_percentage: number
+  ham_percentage: number
+  balance_ratio: number
+  average_text_length: number
+  min_text_length: number
+  max_text_length: number
+  average_word_count: number
+  training_samples_used: number
+}
+
+export interface DistributionItem {
+  range: string
+  spam: number
+  ham: number
+  total: number
+}
+
+export interface DatasetDistributionResponse {
+  text_length_distribution: DistributionItem[]
+  word_count_distribution: DistributionItem[]
+}
+
+export interface WordFrequency {
+  word: string
+  count: number
+}
+
+export interface DatasetFeaturesResponse {
+  top_spam_words: WordFrequency[]
+  top_ham_words: WordFrequency[]
+}
+
 // API functions
 export const detectSpam = async (text: string, model: string = 'logistic'): Promise<SpamResponse> => {
   try {
@@ -91,5 +127,42 @@ export const isAPIAvailable = async (): Promise<boolean> => {
     return true
   } catch {
     return false
+  }
+}
+
+// Dataset analysis functions
+export const getDatasetStats = async (): Promise<DatasetStatsResponse> => {
+  try {
+    const response = await api.get<DatasetStatsResponse>('/dataset/stats')
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.detail || 'Failed to get dataset stats')
+    }
+    throw new Error('Network error occurred')
+  }
+}
+
+export const getDatasetDistribution = async (): Promise<DatasetDistributionResponse> => {
+  try {
+    const response = await api.get<DatasetDistributionResponse>('/dataset/distribution')
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.detail || 'Failed to get dataset distribution')
+    }
+    throw new Error('Network error occurred')
+  }
+}
+
+export const getDatasetFeatures = async (): Promise<DatasetFeaturesResponse> => {
+  try {
+    const response = await api.get<DatasetFeaturesResponse>('/dataset/features')
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.detail || 'Failed to get dataset features')
+    }
+    throw new Error('Network error occurred')
   }
 }

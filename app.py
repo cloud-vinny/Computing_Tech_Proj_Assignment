@@ -215,5 +215,148 @@ async def get_models():
         ]
     }
 
+# Dataset analysis endpoints
+def analyze_dataset():
+    """Load and analyze dataset for visualization"""
+    # Try to load the dataset (use small for faster loading)
+    dataset_path = "dataset/cleaned_dataset_small.csv"
+    if not os.path.exists(dataset_path):
+        dataset_path = "dataset/cleaned_dataset.csv"
+    
+    if not os.path.exists(dataset_path):
+        raise FileNotFoundError("Dataset file not found")
+    
+    df = pd.read_csv(dataset_path)
+    df.dropna(subset=['preprocessed_text'], inplace=True)
+    
+    return df
+
+@app.get("/dataset/stats")
+async def get_dataset_stats():
+    """Get dataset statistics for visualization"""
+    try:
+        df = analyze_dataset()
+        
+        # Calculate statistics
+        total_samples = len(df)
+        spam_count = int(df['spam'].sum())
+        ham_count = total_samples - spam_count
+        spam_percentage = (spam_count / total_samples * 100) if total_samples > 0 else 0
+        ham_percentage = (ham_count / total_samples * 100) if total_samples > 0 else 0
+        balance_ratio = (spam_count / ham_count) if ham_count > 0 else 0
+        
+        # Text length statistics
+        text_lengths = df['preprocessed_text'].str.len()
+        avg_text_length = float(text_lengths.mean())
+        min_text_length = int(text_lengths.min())
+        max_text_length = int(text_lengths.max())
+        
+        # Word count statistics
+        word_counts = df['preprocessed_text'].str.split().str.len()
+        avg_word_count = float(word_counts.mean())
+        
+        return {
+            "total_samples": total_samples,
+            "spam_count": spam_count,
+            "ham_count": ham_count,
+            "spam_percentage": round(spam_percentage, 2),
+            "ham_percentage": round(ham_percentage, 2),
+            "balance_ratio": round(balance_ratio, 3),
+            "average_text_length": round(avg_text_length, 2),
+            "min_text_length": min_text_length,
+            "max_text_length": max_text_length,
+            "average_word_count": round(avg_word_count, 2),
+            "training_samples_used": 2000  # From app.py optimization
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating dataset stats: {str(e)}")
+
+@app.get("/dataset/distribution")
+async def get_dataset_distribution():
+    """Get dataset distribution data for charts"""
+    try:
+        df = analyze_dataset()
+        
+        # Text length distribution bins
+        text_lengths = df['preprocessed_text'].str.len()
+        length_bins = [0, 50, 100, 200, 300, 500, 1000, float('inf')]
+        length_labels = ['0-50', '50-100', '100-200', '200-300', '300-500', '500-1000', '1000+']
+        
+        df['length_bin'] = pd.cut(text_lengths, bins=length_bins, labels=length_labels, right=False)
+        
+        distribution_data = []
+        for label in length_labels:
+            bin_data = df[df['length_bin'] == label]
+            spam_count = int(bin_data['spam'].sum())
+            ham_count = len(bin_data) - spam_count
+            
+            distribution_data.append({
+                "range": label,
+                "spam": spam_count,
+                "ham": ham_count,
+                "total": len(bin_data)
+            })
+        
+        # Word count distribution
+        word_counts = df['preprocessed_text'].str.split().str.len()
+        word_bins = [0, 10, 20, 30, 50, 100, float('inf')]
+        word_labels = ['0-10', '10-20', '20-30', '30-50', '50-100', '100+']
+        
+        df['word_bin'] = pd.cut(word_counts, bins=word_bins, labels=word_labels, right=False)
+        
+        word_distribution = []
+        for label in word_labels:
+            bin_data = df[df['word_bin'] == label]
+            spam_count = int(bin_data['spam'].sum())
+            ham_count = len(bin_data) - spam_count
+            
+            word_distribution.append({
+                "range": label,
+                "spam": spam_count,
+                "ham": ham_count,
+                "total": len(bin_data)
+            })
+        
+        return {
+            "text_length_distribution": distribution_data,
+            "word_count_distribution": word_distribution
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calculating distribution: {str(e)}")
+
+@app.get("/dataset/features")
+async def get_dataset_features():
+    """Get top words and features from dataset"""
+    try:
+        df = analyze_dataset()
+        
+        # Separate spam and ham messages
+        spam_messages = df[df['spam'] == 1]['preprocessed_text']
+        ham_messages = df[df['spam'] == 0]['preprocessed_text']
+        
+        def get_top_words(messages, top_n=15):
+            """Extract top words from messages"""
+            all_words = []
+            for text in messages:
+                if pd.notna(text):
+                    words = str(text).split()
+                    all_words.extend(words)
+            
+            from collections import Counter
+            word_counts = Counter(all_words)
+            top_words = word_counts.most_common(top_n)
+            
+            return [{"word": word, "count": count} for word, count in top_words]
+        
+        top_spam_words = get_top_words(spam_messages, 15)
+        top_ham_words = get_top_words(ham_messages, 15)
+        
+        return {
+            "top_spam_words": top_spam_words,
+            "top_ham_words": top_ham_words
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error analyzing features: {str(e)}")
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
