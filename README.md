@@ -112,9 +112,10 @@ Computing_Tech_Proj_Assignment/
 │   ├── cleaned_dataset_full_backup.csv # Backup dataset
 │   ├── emails.csv               # Raw email dataset
 │   └── spam.csv                 # Raw spam dataset
+├── notebook/                    # Jupyter notebooks
+│   ├── Best_Model.ipynb        # AI model training notebook
+│   └── Spam1_2_Final.ipynb     # Data preprocessing notebook
 ├── app.py                       # FastAPI backend server
-├── Best_Model.ipynb            # AI model training notebook
-├── Spam1_2_Final.ipynb         # Data preprocessing notebook
 ├── requirements.txt             # Python dependencies
 ├── railway.json                 # Railway deployment configuration
 ├── runtime.txt                  # Python version specification
