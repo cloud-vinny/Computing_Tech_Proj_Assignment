@@ -109,7 +109,9 @@ Computing_Tech_Proj_Assignment/
 ├── dataset/                     # Training data
 │   ├── cleaned_dataset.csv      # Full processed dataset
 │   ├── cleaned_dataset_small.csv # Optimized dataset for training
-│   └── cleaned_dataset_full_backup.csv # Backup dataset
+│   ├── cleaned_dataset_full_backup.csv # Backup dataset
+│   ├── emails.csv               # Raw email dataset
+│   └── spam.csv                 # Raw spam dataset
 ├── app.py                       # FastAPI backend server
 ├── Best_Model.ipynb            # AI model training notebook
 ├── Spam1_2_Final.ipynb         # Data preprocessing notebook
@@ -117,6 +119,9 @@ Computing_Tech_Proj_Assignment/
 ├── railway.json                 # Railway deployment configuration
 ├── runtime.txt                  # Python version specification
 ├── package.json                 # Node.js dependencies
+├── package-lock.json            # Node.js dependency lock file
+├── tsconfig.json                # TypeScript configuration
+├── next.config.js               # Next.js configuration
 └── README.md                    # This file
 ```
 
