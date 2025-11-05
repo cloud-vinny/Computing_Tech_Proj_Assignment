@@ -431,6 +431,21 @@ body {
   color: var(--text-tertiary);
 }
 
+[data-theme="dark"] .dark\:text-gray-400,
+.dark\:text-gray-400 {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .dark\:text-gray-600,
+.dark\:text-gray-600 {
+  color: var(--text-tertiary);
+}
+
+[data-theme="dark"] .dark\:text-red-400,
+.dark\:text-red-400 {
+  color: #f87171;
+}
+
 .text-gray-700 {
   color: var(--text-secondary);
 }
@@ -659,4 +674,33 @@ body {
 .theme-toggle:hover {
   background: var(--bg-input);
   border-color: var(--border-color-focus);
+}
+
+/* Chart Components */
+.chart-container {
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  text-align: center;
+  transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+  border-color: var(--border-color-focus);
+  box-shadow: var(--shadow-md);
+}
+
+.text-red-600 {
+  color: var(--color-danger);
+}
+
+.text-green-600 {
+  color: var(--color-success);
 }

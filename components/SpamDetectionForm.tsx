@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { detectSpam, checkAPIHealth } from '@/lib/api'
+import { savePrediction } from '@/lib/storage'
 
 interface DetectionResult {
   is_spam: boolean
@@ -25,6 +26,14 @@ export default function SpamDetectionForm() {
       return
     }
 
+    // Count words (split by whitespace and filter empty strings)
+    const wordCount = emailText.trim().split(/\s+/).filter(word => word.length > 0).length
+    
+    if (wordCount < 5) {
+      setError(`Please enter at least 5 words. Current: ${wordCount} word${wordCount !== 1 ? 's' : ''}`)
+      return
+    }
+
     setIsLoading(true)
     setError(null)
     setResult(null)
@@ -32,6 +41,17 @@ export default function SpamDetectionForm() {
     try {
       const response = await detectSpam(emailText, selectedModel)
       setResult(response)
+      
+      // Save prediction to history
+      savePrediction(
+        emailText,
+        response.is_spam,
+        response.confidence,
+        response.model_used
+      )
+      
+      // Trigger custom event to update charts (same window)
+      window.dispatchEvent(new Event('localStorageUpdate'))
     } catch (err) {
       const error = err as Error
       if (error.message?.includes('Network Error') || error.message?.includes('fetch')) {
@@ -74,8 +94,13 @@ export default function SpamDetectionForm() {
               rows={8}
               disabled={isLoading}
             />
-            <div className="text-sm text-gray-600">
-              {emailText.length} characters
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              {emailText.length} characters • {emailText.trim() ? emailText.trim().split(/\s+/).filter(word => word.length > 0).length : 0} words
+              {emailText.trim() && emailText.trim().split(/\s+/).filter(word => word.length > 0).length < 5 && (
+                <span className="text-red-600 dark:text-red-400 ml-2">
+                  (Minimum 5 words required)
+                </span>
+              )}
             </div>
           </div>
 
