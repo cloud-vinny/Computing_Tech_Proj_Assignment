@@ -140,11 +140,11 @@ export default function SpamDetectionForm() {
 
         {result && (
           <div className={`result-card ${result.is_spam ? 'result-spam' : 'result-ham'}`}>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
               <h3 className="font-bold text-lg">
                 {result.is_spam ? '🚨 Spam Detected!' : '✅ Legitimate Message'}
               </h3>
-              <span className="text-sm font-bold bg-white px-3 py-1 rounded-full">
+              <span className="text-sm font-bold bg-white px-3 py-1 rounded-full self-start sm:self-auto" style={{ backgroundColor: 'var(--bg-card)' }}>
                 {Math.round(result.confidence * 100)}% confidence
               </span>
             </div>
