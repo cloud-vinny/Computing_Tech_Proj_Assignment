@@ -99,13 +99,15 @@ Computing_Tech_Proj_Assignment/
 │   └── page.tsx                  # Home page
 ├── components/                   # React components
 │   ├── SpamDetectionForm.tsx    # Main detection form
+│   ├── SpamCharts.tsx           # Data visualization charts
 │   ├── Header.tsx               # Header component
 │   ├── Footer.tsx               # Footer component
 │   └── ThemeToggle.tsx          # Dark/light mode toggle button
 ├── contexts/                     # React Context providers
 │   └── ThemeContext.tsx         # Theme state management
 ├── lib/                         # Utility libraries
-│   └── api.ts                   # API client
+│   ├── api.ts                   # API client
+│   └── storage.ts               # LocalStorage utilities
 ├── dataset/                     # Training data
 │   ├── cleaned_dataset.csv      # Full processed dataset
 │   ├── cleaned_dataset_small.csv # Optimized dataset for training
