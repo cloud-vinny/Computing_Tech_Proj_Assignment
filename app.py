@@ -12,10 +12,11 @@ from sklearn.cluster import KMeans
 from imblearn.over_sampling import RandomOverSampler
 import string
 import nltk
-from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import uvicorn
+from nltk import word_tokenize
+from typing import Dict
 
 # Download required NLTK data
 try:
@@ -65,12 +66,19 @@ app.add_middleware(
 
 # Initialize stemmer
 ps = PorterStemmer()
+try:
+    STOP_WORDS = set(stopwords.words('english'))
+except LookupError:
+    nltk.download('stopwords')
+    STOP_WORDS = set(stopwords.words('english'))
+PUNCTUATION = set(string.punctuation)
 
 # Global variables for models
 tfidf = None
 clf = None
 mnb = None
 kmeans = None
+kmeans_label_map: Dict[int, int] = {}
 
 # Pydantic models for request/response
 class SpamRequest(BaseModel):
@@ -86,19 +94,19 @@ class SpamResponse(BaseModel):
 # Text preprocessing function (same as in your notebook)
 def text_transform(text):
     text = text.lower()  # lowercase
-    text = nltk.word_tokenize(text)  # tokenize
-    
-    # remove special chars & stopwords & punctuation & stemming
-    b = []
-    for a in text:
-        if a.isalnum() and a not in stopwords.words('english') and a not in string.punctuation:
-            b.append(ps.stem(a))
-    
-    return " ".join(b)
+    tokens = word_tokenize(text)  # tokenize
+
+    filtered_tokens = [
+        ps.stem(token)
+        for token in tokens
+        if token.isalnum() and token not in STOP_WORDS and token not in PUNCTUATION
+    ]
+
+    return " ".join(filtered_tokens)
 
 # Load and train models
 def load_and_train_models():
-    global tfidf, clf, mnb, kmeans
+    global tfidf, clf, mnb, kmeans, kmeans_label_map
     
     try:
         print("Loading dataset...")
@@ -133,6 +141,19 @@ def load_and_train_models():
         print("Training K-Means...")
         kmeans = KMeans(n_clusters=2, random_state=2, n_init=10)  # Reduced n_init
         kmeans.fit(X)
+
+        # Build a cluster -> class map so we can interpret predictions deterministically
+        cluster_assignments = kmeans.predict(X)
+        kmeans_label_map = {}
+        for cluster_id in range(kmeans.n_clusters):
+            indices = np.where(cluster_assignments == cluster_id)[0]
+            if len(indices) == 0:
+                kmeans_label_map[cluster_id] = 0
+                continue
+
+            spam_votes = int(y[indices].sum())
+            ham_votes = len(indices) - spam_votes
+            kmeans_label_map[cluster_id] = 1 if spam_votes >= ham_votes else 0
         
         print("All models trained successfully!")
         
@@ -166,36 +187,54 @@ async def detect_spam(request: SpamRequest):
         if not request.text.strip():
             raise HTTPException(status_code=400, detail="Text cannot be empty")
         
+        model_key = request.model.lower()
+        if tfidf is None:
+            raise HTTPException(status_code=503, detail="Models are not loaded yet. Please try again soon.")
+        if model_key == "logistic" and clf is None:
+            raise HTTPException(status_code=503, detail="Logistic Regression model is unavailable. Please try again later.")
+        if model_key == "naive_bayes" and mnb is None:
+            raise HTTPException(status_code=503, detail="Naive Bayes model is unavailable. Please try again later.")
+        if model_key == "kmeans" and kmeans is None:
+            raise HTTPException(status_code=503, detail="K-Means model is unavailable. Please try again later.")
+
         # Preprocess text
         cleaned_text = text_transform(request.text)
-        text_vector = tfidf.transform([cleaned_text])
+        text_vector_sparse = tfidf.transform([cleaned_text])
+        text_vector_dense = text_vector_sparse.toarray()
         
         # Select model and make prediction
-        if request.model.lower() == "logistic":
-            prediction = clf.predict(text_vector)[0]
-            confidence = clf.predict_proba(text_vector)[0][1]  # Probability of being spam
+        if model_key == "logistic":
+            prediction = clf.predict(text_vector_dense)[0]
+            confidence = clf.predict_proba(text_vector_dense)[0][1]  # Probability of being spam
             model_used = "Logistic Regression"
-        elif request.model.lower() == "naive_bayes":
-            prediction = mnb.predict(text_vector)[0]
-            confidence = mnb.predict_proba(text_vector)[0][1]  # Probability of being spam
+            is_spam = bool(prediction)
+        elif model_key == "naive_bayes":
+            prediction = mnb.predict(text_vector_dense)[0]
+            confidence = mnb.predict_proba(text_vector_dense)[0][1]  # Probability of being spam
             model_used = "Naive Bayes"
-        elif request.model.lower() == "kmeans":
-            prediction = kmeans.predict(text_vector)[0]
+            is_spam = bool(prediction)
+        elif model_key == "kmeans":
+            cluster_id = int(kmeans.predict(text_vector_dense)[0])
+            mapped_label = kmeans_label_map.get(cluster_id, 0)
+            is_spam = bool(mapped_label)
             # For K-Means, we'll use distance to cluster centers as confidence
-            distances = kmeans.transform(text_vector)
-            confidence = 1 - (distances.min() / distances.max())  # Normalized confidence
+            distances = kmeans.transform(text_vector_dense)[0]
+            max_distance = float(distances.max())
+            min_distance = float(distances.min())
+            confidence = 1.0 if max_distance == 0 else 1 - (min_distance / max_distance)
+            confidence = max(0.0, min(confidence, 1.0))
             model_used = "K-Means"
         else:
             raise HTTPException(status_code=400, detail="Invalid model. Use 'logistic', 'naive_bayes', or 'kmeans'")
         
         # Determine result message
-        if prediction == 1:
+        if is_spam:
             message = "This message appears to be spam."
         else:
             message = "This message appears to be legitimate."
         
         return SpamResponse(
-            is_spam=bool(prediction),
+            is_spam=is_spam,
             confidence=float(confidence),
             model_used=model_used,
             message=message

@@ -1,9 +1,42 @@
 import axios from 'axios'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
-  (typeof window !== 'undefined' && window.location.hostname === 'localhost' 
-    ? 'http://localhost:8000' 
-    : 'https://computingtechprojassignment-production.up.railway.app')
+const DEFAULT_REMOTE_URL = 'https://computingtechprojassignment-production.up.railway.app'
+const LOCAL_API_URL = 'http://localhost:8000'
+
+const resolveBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL
+  }
+
+  if (typeof window === 'undefined') {
+    return process.env.NODE_ENV === 'development' ? LOCAL_API_URL : DEFAULT_REMOTE_URL
+  }
+
+  const host = window.location.hostname
+  const localHosts = new Set(['localhost', '127.0.0.1', '0.0.0.0', '::1'])
+  const isPrivateIPv4 =
+    /^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) &&
+    (() => {
+      const segments = host.split('.').map(Number)
+      if (segments.length !== 4 || segments.some((segment) => Number.isNaN(segment))) {
+        return false
+      }
+      const [first, second] = segments
+      if (first === 10) return true
+      if (first === 172 && second >= 16 && second <= 31) return true
+      if (first === 192 && second === 168) return true
+      if (first === 127) return true
+      return false
+    })()
+
+  if (localHosts.has(host) || host.endsWith('.local') || isPrivateIPv4) {
+    return LOCAL_API_URL
+  }
+
+  return DEFAULT_REMOTE_URL
+}
+
+const API_BASE_URL = resolveBaseUrl()
 
 // Create axios instance
 const api = axios.create({
